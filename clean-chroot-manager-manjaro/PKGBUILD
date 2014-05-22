@@ -1,0 +1,33 @@
+# Maintainer: graysky <graysky AT archlinux DOT us>
+# Adapted for Manjaro by Kf4btg AT Github
+
+pkgname='clean-chroot-manager'
+pkgver=2.55
+pkgrel=1
+pkgdesc='Wrapper scripts for managing clean chroots (64-bit and 32-bit).'
+arch=('any')
+url='https://github.com/graysky2/clean-chroot-manager'
+license=('MIT')
+depends=('coreutils' 'devtools' 'grep' 'ncurses' 'sed')
+conflicts=('clean_chroot_manager')
+replaces=('clean_chroot_manager')
+source=("http://repo-ck.com/source/$pkgname/$pkgname-$pkgver.tar.xz"
+		  "manjaro-nspawn"
+		  "ccm-manjaro.patch")
+sha256sums=('c6cc4f4063df1324da7e823d2269351da475e3aa62a29ef2209322c3a7d1732a'
+	'827def8896878632a21b57fa62ae8f9119312ba414d2fab59d642649ceebca6d'
+	'c9b276e6a3e83322f6cda8b582100ce33e5cf724cae42158299fc8bcf79d6008')
+install=ccm.install
+
+build() {
+  cd "$pkgname-$pkgver"
+  patch -p3 < "$srcdir/ccm-manjaro.patch"
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install
+  install -Dm644 MIT "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+  install -Dm "$srcdir/manjaro-nspawn" "$pkgdir/usr/bin/manjaro-nspawn"
+}

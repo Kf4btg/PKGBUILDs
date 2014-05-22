@@ -1,0 +1,185 @@
+diff -rupN clean-chroot-manager/src/clean-chroot-manager-2.55/common/clean-chroot-manager32.in clean-chroot-manager-manjaro/src/clean-chroot-manager-2.55/common/clean-chroot-manager32.in
+--- clean-chroot-manager/src/clean-chroot-manager-2.55/common/clean-chroot-manager32.in	2014-05-04 08:11:43.000000000 -0400
++++ clean-chroot-manager-manjaro/src/clean-chroot-manager-2.55/common/clean-chroot-manager32.in	2014-05-16 23:13:35.869998909 -0400
+@@ -50,7 +50,7 @@ HOMEDIR="$(getent passwd $USER | cut -d:
+ CFGFILE=$HOMEDIR/.config/$PKG.conf
+ 
+ # dependency checks probably not needed but they do not hurt
+-command -v mkarchroot >/dev/null 2>&1 || {
++command -v mkmanjaroroot >/dev/null 2>&1 || {
+ local mesg="devtools is required to use this script. Aborting."
+ echo -e "${RED}==> ERROR:${ALL_OFF}${BOLD} ${mesg}${ALL_OFF}"
+ exit 1; }
+@@ -107,13 +107,13 @@ check() {
+ }
+ 
+ create() {
+-	if [[ -f $CHROOTPATH32/root/.arch-chroot ]]; then
++	if [[ -f $CHROOTPATH32/root/.manjaro-chroot ]]; then
+ 		local mesg="Working directory $CHROOTPATH32 already exists."
+ 		echo -e "${RED}==> ERROR:${ALL_OFF}${BOLD} ${mesg}${ALL_OFF}" && exit 1
+ 	fi
+ 
+ 	# setup the chroot
+-	setarch "i686" mkarchroot -C /usr/share/devtools/pacman-extra.conf \
++	setarch "i686" mkmanjaroroot -C /usr/share/devtools/pacman-extra.conf \
+ 		-M /usr/share/devtools/makepkg-i686.conf $CHROOTPATH32/root base-devel
+ 
+ 	# setup /etc/makepkg.conf in the chroot
+@@ -130,7 +130,7 @@ create() {
+ }
+ 
+ check2() {
+-	if [[ ! -f $CHROOTPATH32/root/.arch-chroot ]]; then
++	if [[ ! -f $CHROOTPATH32/root/.manjaro-chroot ]]; then
+ 		local mesg="Create a chroot first using the 'c' option and try again."
+ 		echo -e "${RED}==>${ALL_OFF}${BOLD} ${mesg}${ALL_OFF}"
+ 		exit 1
+@@ -188,7 +188,7 @@ EOF
+ update() {
+ 	local mesg="Updating the chroot..."
+ 	echo -e "${YELLOW}---->${ALL_OFF}${BOLD} ${mesg}${ALL_OFF}"
+-	arch-nspawn $CHROOTPATH32/root pacman -Syu --noconfirm
++	manjaro-nspawn $CHROOTPATH32/root pacman -Syu --noconfirm
+ }
+ 
+ list() {
+@@ -214,7 +214,7 @@ testing() {
+ 			-i -e '/^\[community-testing\]/{$!N; s,#,,}' $CHROOTPATH32/root/etc/pacman.conf
+ 		local mesg="Forcing an update to use any affected packages..."
+ 		echo -e "${YELLOW}---->${ALL_OFF}${BOLD} ${mesg}${ALL_OFF}"
+-		arch-nspawn $CHROOTPATH32/root pacman -Syu --noconfirm
++		manjaro-nspawn $CHROOTPATH32/root pacman -Syu --noconfirm
+ 	elif [[ "$TESTING" = "Enabled" ]]; then
+ 		# switch off testing
+ 		local mesg="Disabling [testing] in chroot..."
+@@ -225,12 +225,12 @@ testing() {
+ 			-i -e '/^#\[community-testing\]/{$!N; s,I,#I,}' $CHROOTPATH32/root/etc/pacman.conf
+ 		local mesg="Downgrading affected packages if any..."
+ 		echo -e "${YELLOW}---->${ALL_OFF}${BOLD} ${mesg}${ALL_OFF}"
+-		arch-nspawn $CHROOTPATH32/root pacman -Suu --noconfirm
++		manjaro-nspawn $CHROOTPATH32/root pacman -Suu --noconfirm
+ 	fi
+ }
+ 
+ preview() {
+-	[[ -f $CHROOTPATH32/root/.arch-chroot ]] && \
++	[[ -f $CHROOTPATH32/root/.manjaro-chroot ]] && \
+ 		PRESENT="${BOLD}${GREEN}(Present)${ALL_OFF}" || \
+ 		PRESENT="${BOLD}${RED}(Not present)${ALL_OFF}"
+ 	echo -en ${BOLD}" chroot path:"
+@@ -282,7 +282,7 @@ case "$1" in
+ 		header && preview
+ 		;;
+ 	s)
+-		if [[ ! -f $CHROOTPATH32/root/.arch-chroot ]]; then
++		if [[ ! -f $CHROOTPATH32/root/.manjaro-chroot ]]; then
+ 			mesg="No chroot has been created so making one now..."
+ 			echo -e "${YELLOW}---->${ALL_OFF}${BOLD} ${mesg}${ALL_OFF}"
+ 			mesg=
+diff -rupN clean-chroot-manager/src/clean-chroot-manager-2.55/common/clean-chroot-manager64.in clean-chroot-manager-manjaro/src/clean-chroot-manager-2.55/common/clean-chroot-manager64.in
+--- clean-chroot-manager/src/clean-chroot-manager-2.55/common/clean-chroot-manager64.in	2014-05-04 08:10:26.000000000 -0400
++++ clean-chroot-manager-manjaro/src/clean-chroot-manager-2.55/common/clean-chroot-manager64.in	2014-05-16 23:12:55.049792316 -0400
+@@ -50,7 +50,7 @@ HOMEDIR="$(getent passwd $USER | cut -d:
+ CFGFILE=$HOMEDIR/.config/$PKG.conf
+ 
+ # dependency checks probably not needed but they do not hurt
+-command -v mkarchroot >/dev/null 2>&1 || {
++command -v mkmanjaroroot >/dev/null 2>&1 || {
+ local mesg="devtools is required to use this script. Aborting."
+ echo -e "${RED}==> ERROR:${ALL_OFF}${BOLD} ${mesg}${ALL_OFF}"
+ exit 1; }
+@@ -119,13 +119,13 @@ check() {
+ }
+ 
+ create() {
+-	if [[ -f $CHROOTPATH64/root/.arch-chroot ]]; then
++	if [[ -f $CHROOTPATH64/root/.manjaro-chroot ]]; then
+ 		local mesg="Working directory $CHROOTPATH64 already exists."
+ 		echo -e "${RED}==> ERROR:${ALL_OFF}${BOLD} ${mesg}${ALL_OFF}" && exit 1
+ 	fi
+ 
+ 	# setup the chroot
+-	mkarchroot $CHROOTPATH64/root base-devel
++	mkmanjaroroot $CHROOTPATH64/root base-devel
+ 
+ 	# setup /etc/makepkg.conf in the chroot
+ 	if [[ -z "$PACKAGER" ]]; then
+@@ -141,7 +141,7 @@ create() {
+ }
+ 
+ check2() {
+-	if [[ ! -f $CHROOTPATH64/root/.arch-chroot ]]; then
++	if [[ ! -f $CHROOTPATH64/root/.manjaro-chroot ]]; then
+ 		local mesg="Create a chroot first using the 'c' option and try again."
+ 		echo -e "${RED}==>${ALL_OFF}${BOLD} ${mesg}${ALL_OFF}"
+ 		exit 1
+@@ -200,7 +200,7 @@ EOF
+ update() {
+ 	local mesg="Updating the chroot..."
+ 	echo -e "${YELLOW}---->${ALL_OFF}${BOLD} ${mesg}${ALL_OFF}"
+-	arch-nspawn $CHROOTPATH64/root pacman -Syu --noconfirm
++	manjaro-nspawn $CHROOTPATH64/root pacman -Syu --noconfirm
+ }
+ 
+ list() {
+@@ -226,7 +226,7 @@ testing() {
+ 			-i -e '/^\[community-testing\]/{$!N; s,#,,}' $CHROOTPATH64/root/etc/pacman.conf
+ 		local mesg="Forcing an update to use any affected packages..."
+ 		echo -e "${YELLOW}---->${ALL_OFF}${BOLD} ${mesg}${ALL_OFF}"
+-		arch-nspawn $CHROOTPATH64/root pacman -Syu --noconfirm
++		manjaro-nspawn $CHROOTPATH64/root pacman -Syu --noconfirm
+ 	elif [[ "$TESTING" = "Enabled" ]]; then
+ 		# switch off testing
+ 		local mesg="Disabling [testing] in chroot..."
+@@ -237,7 +237,7 @@ testing() {
+ 			-i -e '/^#\[community-testing\]/{$!N; s,I,#I,}' $CHROOTPATH64/root/etc/pacman.conf
+ 		local mesg="Downgrading affected packages if any..."
+ 		echo -e "${YELLOW}---->${ALL_OFF}${BOLD} ${mesg}${ALL_OFF}"
+-		arch-nspawn $CHROOTPATH64/root pacman -Syu --noconfirm
++		manjaro-nspawn $CHROOTPATH64/root pacman -Syu --noconfirm
+ 	fi
+ }
+ 
+@@ -248,10 +248,10 @@ multilib() {
+ 		echo -e "${YELLOW}---->${ALL_OFF}${BOLD} ${mesg}${ALL_OFF}"
+ 		sed -i -e '/^#\[multilib\]/ s,#,,' \
+ 			-i -e '/^\[multilib\]/{$!N; s,#,,}' $CHROOTPATH64/root/etc/pacman.conf
+-		arch-nspawn $CHROOTPATH64/root pacman -Syyu --noconfirm
++		manjaro-nspawn $CHROOTPATH64/root pacman -Syyu --noconfirm
+ 		local mesg="To use the multilib version of gcc, execute the following:"
+ 		echo -e "${YELLOW}---->${ALL_OFF}${BOLD} ${mesg}${ALL_OFF}"
+-		local mesg="sudo arch-nspawn $CHROOTPATH64/root pacman -S gcc-multilib"
++		local mesg="sudo manjaro-nspawn $CHROOTPATH64/root pacman -S gcc-multilib"
+ 		echo -e "${YELLOW}---->${ALL_OFF}${BOLD} ${mesg}${ALL_OFF}"
+ 	elif [[ "$MULTILIB" = "Enabled" ]]; then
+ 		# switch off multilib
+@@ -259,16 +259,16 @@ multilib() {
+ 		echo -e "${YELLOW}---->${ALL_OFF}${BOLD} ${mesg}${ALL_OFF}"
+ 		sed -i -e '/^\[multilib\]/ s,\[,#\[,' \
+ 			-i -e '/^#\[multilib\]/{$!N; s,I,#I,}' $CHROOTPATH64/root/etc/pacman.conf
+-		arch-nspawn $CHROOTPATH64/root pacman -Syyu --noconfirm
++		manjaro-nspawn $CHROOTPATH64/root pacman -Syyu --noconfirm
+ 		local mesg="Restore the native x86_64 version of gcc by executing the following:"
+ 		echo -e "${YELLOW}---->${ALL_OFF}${BOLD} ${mesg}${ALL_OFF}"
+-		local mesg="sudo arch-nspawn $CHROOTPATH64/root pacman -S gcc gcc-libs binutils"
++		local mesg="sudo manjaro-nspawn $CHROOTPATH64/root pacman -S gcc gcc-libs binutils"
+ 		echo -e "${YELLOW}---->${ALL_OFF}${BOLD} ${mesg}${ALL_OFF}"
+ 	fi
+ }
+ 
+ preview() {
+-	[[ -f $CHROOTPATH64/root/.arch-chroot ]] && \
++	[[ -f $CHROOTPATH64/root/.manjaro-chroot ]] && \
+ 		PRESENT="${BOLD}${GREEN}(Present)${ALL_OFF}" || \
+ 		PRESENT="${BOLD}${RED}(Not present)${ALL_OFF}"
+ 	echo -en ${BOLD}" chroot path:"
+@@ -326,7 +326,7 @@ case "$1" in
+ 		header && preview
+ 		;;
+ 	s)
+-		if [[ ! -f $CHROOTPATH64/root/.arch-chroot ]]; then
++		if [[ ! -f $CHROOTPATH64/root/.manjaro-chroot ]]; then
+ 			mesg="No chroot has been created so making one now..."
+ 			echo -e "${YELLOW}---->${ALL_OFF}${BOLD} ${mesg}${ALL_OFF}"
+ 			mesg=
