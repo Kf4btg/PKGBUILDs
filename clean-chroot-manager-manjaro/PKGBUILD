@@ -29,5 +29,5 @@ package() {
   cd "$pkgname-$pkgver"
   make DESTDIR="$pkgdir" install
   install -Dm644 MIT "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
-  install -Dm "$srcdir/manjaro-nspawn" "$pkgdir/usr/bin/manjaro-nspawn"
+  install -D "$srcdir/manjaro-nspawn" "$pkgdir/usr/bin/manjaro-nspawn"
 }
