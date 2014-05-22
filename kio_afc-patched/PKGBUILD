@@ -1,0 +1,39 @@
+# Contributor: Federico Chiacchiaretta <federico.chia at gmail.com>
+# Editor: jevans, use sunzhigang-fork for bugfixes
+
+pkgname=kio_afc-git
+pkgver=r18.10b7bc9
+pkgrel=1
+pkgdesc="a KIOSlave implementation wrapping the AFC protocol"
+arch=('i686' 'x86_64')
+url="http://github.com/JonathanBeck/kio_afc"
+license=('GPL')
+depends=('kdelibs' 'libimobiledevice-git')
+makedepends=('git' 'cmake')
+
+source=("git://github.com/sunzhigang/kio_afc.git"
+		  "kio-afc.patch")
+_gitname="kio_afc"
+
+pkgver() {
+	cd "$srcdir/$_gitname"
+  printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+}
+
+build() {
+	
+  patch -p2 < kio-afc.patch
+  rm -rf $srcdir/build
+  mkdir $srcdir/build
+  cd $srcdir/build
+  cmake -DCMAKE_INSTALL_PREFIX=`kde4-config --prefix` ../$_gitname
+  make
+}
+  
+package() {
+  cd $srcdir/build
+  make DESTDIR="$pkgdir" install
+}
+
+md5sums=('SKIP'
+         'af36209deedd78fc9b8a91064a45c50d')

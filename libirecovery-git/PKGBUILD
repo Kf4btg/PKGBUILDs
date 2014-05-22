@@ -1,0 +1,38 @@
+# Contributor: Matthew Bauer <mjbauer95@gmail.com>
+# EDITOR: jevans
+_pkgname=libirecovery
+pkgname=$_pkgname-git
+pkgver=163.14a268c
+pkgrel=1
+pkgdesc="Console library for iBoot/iBSS used by iPhone & iPod touch"
+arch=('i686' 'x86_64')
+url="http://github.com/libimobiledevice/$_pkgname"
+license=('GPL2' 'LGPL2.1')
+depends=('usbmuxd' 'libimobiledevice-git')
+makedepends=('git')
+provides=("$_pkgname")
+conflicts=("$_pkgname")
+replaces=("$_pkgname")
+options=('libtool')
+
+source="git://github.com/libimobiledevice/$_pkgname.git"
+md5sums=('SKIP') 
+_gitname="$_pkgname"
+
+pkgver() {
+	cd $_gitname
+	echo $(git rev-list --count HEAD).$(git rev-parse --short HEAD)
+}
+
+build() {
+	cd ${srcdir}/$_gitname	
+	msg "Starting make..."
+
+	./autogen.sh --prefix=/usr
+	make
+}
+
+package() {
+  cd $srcdir/$_gitname
+  make DESTDIR=$pkgdir install
+}

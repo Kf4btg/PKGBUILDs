@@ -1,0 +1,9 @@
+diff -Nurp -x .git kag.test/src/kio_afc/afc-network.desktop kio_afc-patched-git/src/kio_afc/afc-network.desktop
+--- kag.test/src/kio_afc/afc-network.desktop	2014-05-17 19:38:34.433894926 -0400
++++ kio_afc-patched-git/src/kio_afc/afc-network.desktop	2014-05-17 19:05:35.760074537 -0400
+@@ -21,4 +21,4 @@ Name[uk]=Пристрої AFC
+ Name[x-test]=xxAFC Devicesxx
+ Open=false
+ Type=Link
+-URL=afc:/
++URL=afc:
