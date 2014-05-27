@@ -1,0 +1,61 @@
+# Maintainer: Diego José <diegoxter1006@gmail.com>
+# Contributor: Kf4btg at Github
+
+pkgname=andromeda-git
+pkgver=0.3.r87.ged28638
+pkgrel=1
+pkgdesc="Cross-platform file manager, written on Qt"
+arch=('x86_64')
+url="https://gitorious.org/andromeda"
+license=('Custom')
+depends=('qt5-quick1' 'qt5-svg' 'poppler-qt5')
+makedepends=('git' 'qbs-git' 'gcc')
+conflicts=('andromeda')
+
+_gitname=andromeda
+_subname=libs
+source=("$_gitname::git+https://github.com/ABBAPOH/${_gitname}.git"
+	"$_subname::git+https://github.com/ABBAPOH/${_subname}.git")
+md5sums=('SKIP'
+         'SKIP')
+
+pkgver() {
+  cd "$_gitname"
+
+  if GITTAG="$(git describe --abbrev=0 --tags 2>/dev/null)"; then
+    echo "$(sed -e "s/^${_gitname%%-git}//" -e 's/^[-_/a-zA-Z]\+//' -e 's/[-_+]/./g' <<< ${GITTAG}).r$(git rev-list --count ${GITTAG}..).g$(git log -1 --format="%h")"
+    else
+    echo "0.r$(git rev-list --count master).g$(git log -1 --format="%h")"
+    fi
+}
+
+prepare() {
+  # update submodule
+  cd "${_gitname}"
+  git submodule init
+  git config submodule.$_subname.url "${srcdir}/${_subname}"
+  git submodule update
+}
+
+build() {
+
+  #make a package-specific config dir so as not to fiddle with the user's setup
+  [ -d "${srcdir}/.config" ] && rm -rf "${srcdir}/.config"
+  
+  qbs-setup-toolchains --settings-dir "${srcdir}/.config" --detect
+  qbs-setup-qt --settings-dir "${srcdir}/.config" "$(which qmake-qt5)" andromeda 
+}
+
+package() {
+
+  [ -d "${srcdir}/${_gitname}-build" ] && rm -rf "${srcdir}/${_gitname}-build"
+  mkdir "${srcdir}/${_gitname}-build"
+
+  cd "${srcdir}/${_gitname}-build"
+
+  qbs install --settings-dir "${srcdir}/.config" -f "../${_gitname}/${_gitname}.qbs" --install-root "${pkgdir}/usr" release profile:andromeda
+  
+}
+
+# vim:set ts=2 sw=2 et:
+
