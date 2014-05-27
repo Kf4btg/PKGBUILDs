@@ -9,7 +9,7 @@ arch=('x86_64')
 url="https://gitorious.org/andromeda"
 license=('Custom')
 depends=('qt5-quick1' 'qt5-svg' 'poppler-qt5')
-makedepends=('git' 'qbs-git' 'gcc')
+makedepends=('qt5-tools' 'qbs-git' 'gcc')
 conflicts=('andromeda')
 
 _gitname=andromeda
