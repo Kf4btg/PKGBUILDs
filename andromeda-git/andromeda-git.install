@@ -1,31 +1,17 @@
 ## arg 1:  the new package version
-#pre_install() {
-	# do something here
-#}
-
-## arg 1:  the new package version
 post_install() {
-	sudo update-desktop-database
-#}
-
-## arg 1:  the new package version
-## arg 2:  the old package version
-#pre_upgrade() {
-	# do something here
-#}
-
-## arg 1:  the new package version
-## arg 2:  the old package version
-#post_upgrade() {
-	# do something here
-#}
+	update-desktop-database -q
+	echo
+	echo "==> To get Andromeda (and all QT5 apps) to use"
+	echo "    a theme other than their default \"Fusion\" style,"
+	echo "    you'll likely need to set the QT_STYLE_OVERRIDE"
+	echo "    environment variable. For example, to make it match"
+	echo "    the theme you've set for GTK apps, add"
+	echo "    'export QT_STYLE_OVERRIDE=gtk' to your ~/.bashrc, "
+	echo "    /etc/profile, or wherever you do such things."
+}
 
 ## arg 1:  the old package version
-#pre_remove() {
-	# do something here
-#}
-
-## arg 1:  the old package version
-#post_remove() {
-	post_install
-#}
+post_remove() {
+	update-desktop-database -q
+}

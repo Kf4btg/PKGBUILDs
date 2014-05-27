@@ -8,9 +8,10 @@ pkgdesc="Cross-platform file manager, written on Qt"
 arch=('x86_64')
 url="https://gitorious.org/andromeda"
 license=('Custom')
-depends=('qt5-quick1' 'qt5-svg' 'poppler-qt5')
-makedepends=('qt5-tools' 'qbs-git' 'gcc')
+depends=('qt5-quick1' 'desktop-file-utils')
+makedepends=('qt5-tools' 'git' 'qbs-git')
 conflicts=('andromeda')
+install="${pkgname}.install"
 
 _gitname=andromeda
 _subname=libs
@@ -38,7 +39,6 @@ prepare() {
 }
 
 build() {
-
   #make a package-specific config dir so as not to fiddle with the user's setup
   [ -d "${srcdir}/.config" ] && rm -rf "${srcdir}/.config"
   
