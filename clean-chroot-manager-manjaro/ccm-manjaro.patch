@@ -1,6 +1,6 @@
-diff -rupN clean-chroot-manager/src/clean-chroot-manager-2.55/common/clean-chroot-manager32.in clean-chroot-manager-manjaro/src/clean-chroot-manager-2.55/common/clean-chroot-manager32.in
---- clean-chroot-manager/src/clean-chroot-manager-2.55/common/clean-chroot-manager32.in	2014-05-04 08:11:43.000000000 -0400
-+++ clean-chroot-manager-manjaro/src/clean-chroot-manager-2.55/common/clean-chroot-manager32.in	2014-05-16 23:13:35.869998909 -0400
+diff -rupN a/common/clean-chroot-manager32.in b/common/clean-chroot-manager32.in
+--- a/common/clean-chroot-manager32.in	2014-05-04 08:11:43.000000000 -0400
++++ b/common/clean-chroot-manager32.in	2014-05-16 23:13:35.869998909 -0400
 @@ -50,7 +50,7 @@ HOMEDIR="$(getent passwd $USER | cut -d:
  CFGFILE=$HOMEDIR/.config/$PKG.conf
  
@@ -26,7 +26,7 @@ diff -rupN clean-chroot-manager/src/clean-chroot-manager-2.55/common/clean-chroo
  		-M /usr/share/devtools/makepkg-i686.conf $CHROOTPATH32/root base-devel
  
  	# setup /etc/makepkg.conf in the chroot
-@@ -130,7 +130,7 @@ create() {
+@@ -135,7 +135,7 @@ create() {
  }
  
  check2() {
@@ -35,7 +35,7 @@ diff -rupN clean-chroot-manager/src/clean-chroot-manager-2.55/common/clean-chroo
  		local mesg="Create a chroot first using the 'c' option and try again."
  		echo -e "${RED}==>${ALL_OFF}${BOLD} ${mesg}${ALL_OFF}"
  		exit 1
-@@ -188,7 +188,7 @@ EOF
+@@ -193,7 +193,7 @@ EOF
  update() {
  	local mesg="Updating the chroot..."
  	echo -e "${YELLOW}---->${ALL_OFF}${BOLD} ${mesg}${ALL_OFF}"
@@ -44,7 +44,7 @@ diff -rupN clean-chroot-manager/src/clean-chroot-manager-2.55/common/clean-chroo
  }
  
  list() {
-@@ -214,7 +214,7 @@ testing() {
+@@ -219,7 +219,7 @@ testing() {
  			-i -e '/^\[community-testing\]/{$!N; s,#,,}' $CHROOTPATH32/root/etc/pacman.conf
  		local mesg="Forcing an update to use any affected packages..."
  		echo -e "${YELLOW}---->${ALL_OFF}${BOLD} ${mesg}${ALL_OFF}"
@@ -53,7 +53,7 @@ diff -rupN clean-chroot-manager/src/clean-chroot-manager-2.55/common/clean-chroo
  	elif [[ "$TESTING" = "Enabled" ]]; then
  		# switch off testing
  		local mesg="Disabling [testing] in chroot..."
-@@ -225,12 +225,12 @@ testing() {
+@@ -230,12 +230,12 @@ testing() {
  			-i -e '/^#\[community-testing\]/{$!N; s,I,#I,}' $CHROOTPATH32/root/etc/pacman.conf
  		local mesg="Downgrading affected packages if any..."
  		echo -e "${YELLOW}---->${ALL_OFF}${BOLD} ${mesg}${ALL_OFF}"
@@ -68,7 +68,7 @@ diff -rupN clean-chroot-manager/src/clean-chroot-manager-2.55/common/clean-chroo
  		PRESENT="${BOLD}${GREEN}(Present)${ALL_OFF}" || \
  		PRESENT="${BOLD}${RED}(Not present)${ALL_OFF}"
  	echo -en ${BOLD}" chroot path:"
-@@ -282,7 +282,7 @@ case "$1" in
+@@ -287,7 +282,7 @@ case "$1" in
  		header && preview
  		;;
  	s)
@@ -77,9 +77,9 @@ diff -rupN clean-chroot-manager/src/clean-chroot-manager-2.55/common/clean-chroo
  			mesg="No chroot has been created so making one now..."
  			echo -e "${YELLOW}---->${ALL_OFF}${BOLD} ${mesg}${ALL_OFF}"
  			mesg=
-diff -rupN clean-chroot-manager/src/clean-chroot-manager-2.55/common/clean-chroot-manager64.in clean-chroot-manager-manjaro/src/clean-chroot-manager-2.55/common/clean-chroot-manager64.in
---- clean-chroot-manager/src/clean-chroot-manager-2.55/common/clean-chroot-manager64.in	2014-05-04 08:10:26.000000000 -0400
-+++ clean-chroot-manager-manjaro/src/clean-chroot-manager-2.55/common/clean-chroot-manager64.in	2014-05-16 23:12:55.049792316 -0400
+diff -rupN a/common/clean-chroot-manager64.in b/common/clean-chroot-manager64.in
+--- a/common/clean-chroot-manager64.in	2014-05-04 08:10:26.000000000 -0400
++++ b/common/clean-chroot-manager64.in	2014-05-16 23:12:55.049792316 -0400
 @@ -50,7 +50,7 @@ HOMEDIR="$(getent passwd $USER | cut -d:
  CFGFILE=$HOMEDIR/.config/$PKG.conf
  
@@ -105,7 +105,7 @@ diff -rupN clean-chroot-manager/src/clean-chroot-manager-2.55/common/clean-chroo
  
  	# setup /etc/makepkg.conf in the chroot
  	if [[ -z "$PACKAGER" ]]; then
-@@ -141,7 +141,7 @@ create() {
+@@ -146,7 +146,7 @@ create() {
  }
  
  check2() {
@@ -114,7 +114,7 @@ diff -rupN clean-chroot-manager/src/clean-chroot-manager-2.55/common/clean-chroo
  		local mesg="Create a chroot first using the 'c' option and try again."
  		echo -e "${RED}==>${ALL_OFF}${BOLD} ${mesg}${ALL_OFF}"
  		exit 1
-@@ -200,7 +200,7 @@ EOF
+@@ -205,7 +205,7 @@ EOF
  update() {
  	local mesg="Updating the chroot..."
  	echo -e "${YELLOW}---->${ALL_OFF}${BOLD} ${mesg}${ALL_OFF}"
@@ -123,7 +123,7 @@ diff -rupN clean-chroot-manager/src/clean-chroot-manager-2.55/common/clean-chroo
  }
  
  list() {
-@@ -226,7 +226,7 @@ testing() {
+@@ -231,7 +231,7 @@ testing() {
  			-i -e '/^\[community-testing\]/{$!N; s,#,,}' $CHROOTPATH64/root/etc/pacman.conf
  		local mesg="Forcing an update to use any affected packages..."
  		echo -e "${YELLOW}---->${ALL_OFF}${BOLD} ${mesg}${ALL_OFF}"
@@ -132,7 +132,7 @@ diff -rupN clean-chroot-manager/src/clean-chroot-manager-2.55/common/clean-chroo
  	elif [[ "$TESTING" = "Enabled" ]]; then
  		# switch off testing
  		local mesg="Disabling [testing] in chroot..."
-@@ -237,7 +237,7 @@ testing() {
+@@ -242,7 +242,7 @@ testing() {
  			-i -e '/^#\[community-testing\]/{$!N; s,I,#I,}' $CHROOTPATH64/root/etc/pacman.conf
  		local mesg="Downgrading affected packages if any..."
  		echo -e "${YELLOW}---->${ALL_OFF}${BOLD} ${mesg}${ALL_OFF}"
@@ -141,7 +141,7 @@ diff -rupN clean-chroot-manager/src/clean-chroot-manager-2.55/common/clean-chroo
  	fi
  }
  
-@@ -248,10 +248,10 @@ multilib() {
+@@ -253,10 +253,10 @@ multilib() {
  		echo -e "${YELLOW}---->${ALL_OFF}${BOLD} ${mesg}${ALL_OFF}"
  		sed -i -e '/^#\[multilib\]/ s,#,,' \
  			-i -e '/^\[multilib\]/{$!N; s,#,,}' $CHROOTPATH64/root/etc/pacman.conf
@@ -154,7 +154,7 @@ diff -rupN clean-chroot-manager/src/clean-chroot-manager-2.55/common/clean-chroo
  		echo -e "${YELLOW}---->${ALL_OFF}${BOLD} ${mesg}${ALL_OFF}"
  	elif [[ "$MULTILIB" = "Enabled" ]]; then
  		# switch off multilib
-@@ -259,16 +259,16 @@ multilib() {
+@@ -264,16 +264,16 @@ multilib() {
  		echo -e "${YELLOW}---->${ALL_OFF}${BOLD} ${mesg}${ALL_OFF}"
  		sed -i -e '/^\[multilib\]/ s,\[,#\[,' \
  			-i -e '/^#\[multilib\]/{$!N; s,I,#I,}' $CHROOTPATH64/root/etc/pacman.conf
@@ -174,7 +174,7 @@ diff -rupN clean-chroot-manager/src/clean-chroot-manager-2.55/common/clean-chroo
  		PRESENT="${BOLD}${GREEN}(Present)${ALL_OFF}" || \
  		PRESENT="${BOLD}${RED}(Not present)${ALL_OFF}"
  	echo -en ${BOLD}" chroot path:"
-@@ -326,7 +326,7 @@ case "$1" in
+@@ -331,7 +331,7 @@ case "$1" in
  		header && preview
  		;;
  	s)
