@@ -1,0 +1,7 @@
+post_install() {
+	ln -s /usr/bin/qarma /usr/bin/zenity
+}
+
+post_remove() {
+	[ -L /usr/bin/zenity ] && rm /usr/bin/zenity
+}

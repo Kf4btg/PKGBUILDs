@@ -1,0 +1,43 @@
+# Creator: Thomas Lübking <thomas.luebking at gmail>
+# PKGBUILD contributor: Kf4btg AT github
+
+pkgname=qarma-git
+_gitname=qarma
+_pkgver=0.1.0
+pkgver=0.1.0.r13
+pkgrel=1
+pkgdesc="A drop-in replacement clone for zenity, written in Qt4/5"
+arch=('i686' 'x86_64')
+url="https://github.com/luebking/qarma"
+license=('GPL')
+
+conflicts=('zenity')
+replaces=('zenity')
+provides=('qarma' 'zenity')
+depends=('qt4')
+license=('GPL')
+
+source=("$pkgname::git+https://github.com/luebking/$_gitname.git")
+md5sums=('SKIP')
+install="${_gitname}.install"
+
+pkgver() {
+  cd "$pkgname"
+  echo "$_pkgver.r$(git rev-list --count master)"
+}
+
+build()
+{
+    cd "$srcdir"/"$pkgname"
+    qmake .
+    make
+}
+
+package() {
+    install -D "$srcdir"/"$pkgname"/qarma "$pkgdir"/usr/bin/qarma
+    install -dm 644 "$pkgdir"/usr/share/licenses/"$_gitname"
+    install -m 644 -t "$pkgdir"/usr/share/licenses/"$_gitname"/ "$srcdir"/"$pkgname"/LICENSE
+    strip $pkgdir/usr/bin/qarma
+}
+
+# vim:set ts=2 sw=2 et:
