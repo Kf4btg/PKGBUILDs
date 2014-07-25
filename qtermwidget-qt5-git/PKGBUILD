@@ -1,0 +1,47 @@
+# Maintainer: Jerome Leclanche <jerome.leclanche+arch@gmail.com>
+# Contributor: kreed <kreed@kreed.org>
+# Contributor: vicky91 <vickypaiers@gmail.com>
+
+_pkgname=qtermwidget
+pkgname=$_pkgname-qt5-git
+pkgver=0.4.0.37.gebf7d6c
+pkgrel=1
+pkgdesc="A terminal widget for Qt5"
+arch=('i686' 'x86_64')
+url="https://github.com/qterminal/qtermwidget"
+license=('GPL2')
+provides=($_pkgname)
+conflicts=($_pkgname)
+depends=('qt5-base')
+makedepends=('git' 'cmake')
+source=("git://github.com/qterminal/$_pkgname.git")
+sha256sums=('SKIP')
+
+pkgver() {
+	cd "$srcdir/$_pkgname"
+	git describe --always | sed "s/-/./g"
+}
+
+build() {
+	cd "$srcdir/$_pkgname"
+	mkdir -p build
+	cd build
+	# -DLIB_SUFFIX=/ prevents libraries from being installed in /usr/lib64
+	# QTdesigner plugin not updated to QT5 yet
+	cmake -DCMAKE_INSTALL_PREFIX=/usr \
+	  -DCMAKE_BUILD_TYPE=Debug \
+	  -DLIB_SUFFIX=/ \
+	  -DUSE_QT5=On \
+	  -DBUILD_DESIGNER_PLUGIN=0 ..
+	make
+}
+
+package() {
+	cd "$srcdir/$_pkgname"
+	cd build
+	make DESTDIR="$pkgdir" install
+
+	# -DLIB-SUFFIX=/ didn't work...
+	cd "$pkgdir/usr/"
+	mv lib64 lib
+}
