@@ -1,12 +1,13 @@
 diff -rupN a/src/file.cpp b/src/file.cpp
 --- a/src/file.cpp	2015-01-06 16:59:36.321287262 -0500
 +++ b/src/file.cpp	2015-01-06 16:58:41.000000000 -0500
-@@ -307,7 +307,8 @@ File::FileType getFileType(const QString
+@@ -307,7 +307,9 @@ File::FileType getFileType(const QString
          }
          else if (left == QLatin1String("text")
                   || mime == QLatin1String("application/x-zerosize")
 -                 || mime == QLatin1String("application/x-shellscript")) {
 +                 || mime == QLatin1String("application/x-shellscript")
++                 || mime == QLatin1String("application/xml")
 +                 || mime == QLatin1String("application/json")) {
              type = File::Txt;
          }
