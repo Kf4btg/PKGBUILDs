@@ -1,4 +1,4 @@
-**qps-git** pulls from the QtDesktop[1] version of qps which has been been updated to Qt5 and received a few other small fixes.
+**qps-git** pulls from the [QtDesktop][1] version of qps which has been been updated to Qt5 and received a few other small fixes.
 
 **Qlipper2** is now based off of pvanek's GitHub repo (only real difference is a larger icon), has a proper pkgver(), and fixes compilation by disabling the use of system qxt and QTsingleapp, neither of which are in the Arch/Manjaro repos anymore.
 
@@ -10,4 +10,4 @@
   - xml
   - ...more as they come up.
 
-[1] [https://github.com/QtDesktop/qps]
+[1]:[https://github.com/QtDesktop/qps]
