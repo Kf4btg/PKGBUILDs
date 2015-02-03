@@ -10,4 +10,4 @@
   - xml
   - ...more as they come up.
 
-[1]:[https://github.com/QtDesktop/qps]
+[1]: https://github.com/QtDesktop/qps
