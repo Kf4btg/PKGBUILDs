@@ -1,0 +1,41 @@
+# QPS Maintainer: Sergej Pupykin <pupykin.s+arch@gmail.com>
+# Contributor: David Rosenstrauch <darose@darose.net>
+# qps-git PKGBUILD contributor: Kf4btg @ GitHub
+
+pkgname=qps-git
+_pkgname=qps
+_pkgver=1.10.16
+pkgver=1.10.16.r4
+pkgrel=1
+pkgdesc="A visual process manager, an X11 version of 'top' or 'ps'."
+url="http://qps.kldp.net/projects/qps"
+depends=('qt5-base')
+arch=('i686' 'x86_64')
+license="GPL"
+provides=("qps")
+conflicts=("qps")
+
+source=('git+https://github.com/QtDesktop/qps.git'
+       "qps.desktop")
+
+md5sums=('SKIP'
+         'c37d1853f79111670f95f22bdb6323aa')
+
+pkgver() {
+  cd $_pkgname
+  echo $_pkgver.r$(git rev-list --count HEAD)
+}
+
+build() {
+  cd $srcdir/$_pkgname
+  qmake-qt5
+  make
+}
+
+package() {
+  cd $srcdir/$_pkgname
+  install -D -m 755 qps $pkgdir/usr/bin/qps
+  install -D -m 644 qps.1 $pkgdir/usr/share/man/man1/qps.1
+  install -D -m 644 "$srcdir"/qps.desktop $pkgdir/usr/share/applications/qps.desktop
+  install -D -m 644 icon/icon.xpm $pkgdir/usr/share/pixmaps/qps.xpm
+} 

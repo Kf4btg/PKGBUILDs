@@ -1,0 +1,1 @@
+ **Andromeda-git** has been updated (compared to the PKGBUILD currently on the AUR) to use QBS rather than cmake due the corresponding upstream switch. **NOTE**: _QBS seems to be included in the default QT5 install now, so this PKGBUILD needs updating._
