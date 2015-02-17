@@ -1,0 +1,39 @@
+# Maintainer:  kf4btg@GitHub
+pkgname=gtk-theme-mona  
+pkgver=1.1
+pkgrel=1
+pkgdesc="A dark GTK2/GTK3 theme with blue highlights; based on Numix themes."
+url="http://gnome-look.org/content/show.php/Mona+-+Dark+and+blue+GTK+theme?content=168448"
+arch=('any')
+license=('GPL')
+depends=('gtk-engine-murrine')
+source=("${pkgname}-${pkgver}.tar.gz::http://gnome-look.org/CONTENT/content-files/168448-Mona%20${pkgver}.tar.gz")
+md5sums=('3429110cf30a9b1fea80e1fae7e16970')
+
+build() {
+  cd "$srcdir/"
+
+  mv "Mona 1.0" "Mona"
+  mv "Firefox Fix" "Mona/mozilla"
+  mv "Panel Images" "Mona/panel"
+ 
+  ## Enable the dark theme w/ less drastic contrast
+  ##  for gtk3...
+  cd Mona
+  mv gtk-3.0/gtk.css gtk-3.0/gtk-light.css
+  mv gtk-3.0/gtk-dark.css gtk-3.0/gtk.css
+
+  ##   ...and gtk2.
+  sed -i -r 's/(gtk-color-scheme =).*$/\1 "bg_color:#2d2d2d\\nfg_color:#dcdcdc\\nbase_color:#333333\\ntext_color:#dedede\\nselected_bg_color:#3465a4\\nselected_fg_color:#f9f9f9\\ntooltip_bg_color:#2d2d2d\\ntooltip_fg_color:#dcdcdc\\ntitlebar_bg_color:#2d2d2d\\ntitlebar_fg_color:#3468aa\\nmenubar_bg_color:#2d2d2d\\nmenubar_fg_color:#dcdcdc\\ntoolbar_bg_color:#2d2d2d\\ntoolbar_fg_color:#dcdcdc\\nmenu_bg_color:#2d2d2d\\nmenu_fg_color:#dcdcdc\\npanel_bg_color:#2d2d2d\\npanel_fg_color:#dcdcdc\\nlink_color:#fc6f5d"/' gtk-2.0/gtkrc
+  
+}
+
+package() {
+  cd $srcdir
+  
+  install -dm 755 "${pkgdir}"/usr/share/themes/
+  cp -r Mona "${pkgdir}"/usr/share/themes/
+
+  #fix weird permission issue which made files inaccessible...
+  find "$pkgdir/usr" -type f -exec chmod 644 {} \;
+}
