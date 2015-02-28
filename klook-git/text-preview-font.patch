@@ -1,0 +1,19 @@
+diff --git a/src/text.cpp b/src/text.cpp
+index f365cdc..6775bab 100644
+--- a/src/text.cpp
++++ b/src/text.cpp
+@@ -27,12 +27,14 @@
+ 
+ #include <KEncodingProber>
+ #include <KImageCache>
++#include <KGlobalSettings>
+ 
+ MyText::MyText(QGraphicsItem* parent)
+     : QGraphicsProxyWidget(parent)
+     , m_isPreview(false)
+ {
+     m_viewer = new QPlainTextEdit();
++    m_viewer->setFont(KGlobalSettings::fixedFont());
+     m_viewer->setReadOnly(true);
+     m_viewer->viewport()->setCursor(Qt::ArrowCursor);
+     m_viewer->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);

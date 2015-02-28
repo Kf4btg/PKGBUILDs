@@ -3,7 +3,7 @@
 
 pkgname=klook-git
 pkgver=v2.0_10_5_gf01e033
-pkgrel=3
+pkgrel=6
 pkgdesc='A quick file content preview application that supports integration with Dolphin'
 arch=('i686' 'x86_64')
 url="https://abf.rosalinux.ru/uxteam/klook-devel"
@@ -14,20 +14,27 @@ install=$pkgname.install
 
 _gitname="klook-devel"
 source=("git+https://abf.rosalinux.ru/uxteam/${_gitname}.git"
-        "text-files.patch")
+        "text-files.patch"
+        'text-preview-font.patch')
 md5sums=('SKIP'
-         '3f7a4505ebf701828697fa0b6fc7898a')
+         '9c3699301b489070da69236b06f7f772'
+         '11d51af3eb9afedce4a8f12654ad4971')
 
 pkgver() {
   cd "${_gitname}"
   echo $(git describe --tags | sed 's/-/_/g')
 }
 
-build() {
+prepare() {
   cd "${_gitname}"
   
   patch -p1 < "${srcdir}/text-files.patch"
+  patch -p1 < "${srcdir}/text-preview-font.patch"
+}
 
+build() {
+  cd "${_gitname}"
+  
   cmake -DCMAKE_BUILD_TYPE=Release \
         -DCMAKE_INSTALL_PREFIX=/usr
 
