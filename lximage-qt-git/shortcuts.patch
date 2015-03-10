@@ -1,0 +1,123 @@
+diff --git a/src/imageview.cpp b/src/imageview.cpp
+index 74a57ca..76a4a9c 100644
+--- a/src/imageview.cpp
++++ b/src/imageview.cpp
+@@ -59,7 +59,7 @@ ImageView::~ImageView() {
+ void ImageView::wheelEvent(QWheelEvent* event) {
+   int delta = event->delta();
+   // Ctrl key is pressed
+-  if(event->modifiers() & Qt::ControlModifier) {
++  if(event->modifiers() == 0) {
+     if(delta > 0) { // forward
+       zoomIn();
+     }
+diff --git a/src/mainwindow.cpp b/src/mainwindow.cpp
+index f8919fd..d659fa7 100644
+--- a/src/mainwindow.cpp
++++ b/src/mainwindow.cpp
+@@ -111,6 +111,15 @@ MainWindow::MainWindow():
+   connect(shortcut, SIGNAL(activated()), SLOT(on_actionNext_triggered()));
+   shortcut = new QShortcut(Qt::Key_Escape, this);
+   connect(shortcut, SIGNAL(activated()), SLOT(onExitFullscreen()));
++  
++  shortcut = new QShortcut(Qt::Key_Space, this);
++  connect(shortcut, SIGNAL(activated()), SLOT(on_actionNext_triggered()));
++
++  shortcut = new QShortcut(Qt::Key_Period, this);
++  connect(shortcut, SIGNAL(activated()), SLOT(on_actionZoomIn_triggered())); 
++  shortcut = new QShortcut(Qt::Key_Comma, this);
++  connect(shortcut, SIGNAL(activated()), SLOT(on_actionZoomOut_triggered()));
++    
+ }
+ 
+ MainWindow::~MainWindow() {
+@@ -453,7 +462,7 @@ bool MainWindow::eventFilter(QObject* watched, QEvent* event) {
+     switch(event->type()) {
+       case QEvent::Wheel: { // mouse wheel event
+         QWheelEvent* wheelEvent = static_cast<QWheelEvent*>(event);
+-        if(wheelEvent->modifiers() == 0) {
++        if(wheelEvent->modifiers() & Qt::ControlModifier) {
+           int delta = wheelEvent->delta();
+           if(delta < 0)
+             on_actionNext_triggered(); // next image
+diff --git a/src/mainwindow.ui b/src/mainwindow.ui
+index 4c5487a..e0a011a 100644
+--- a/src/mainwindow.ui
++++ b/src/mainwindow.ui
+@@ -221,7 +221,7 @@
+     <string>Zoom &amp;In</string>
+    </property>
+    <property name="shortcut">
+-    <string>Ctrl++</string>
++    <string>Ctrl+=</string>
+    </property>
+   </action>
+   <action name="actionZoomOut">
+@@ -246,6 +246,9 @@
+    <property name="text">
+     <string>&amp;Copy to Clipboard</string>
+    </property>
++   <property name="shortcut">
++    <string>Ctrl+C</string>
++   </property>
+   </action>
+   <action name="actionNext">
+    <property name="icon">
+@@ -288,6 +291,9 @@
+    <property name="text">
+     <string>Original Size</string>
+    </property>
++   <property name="shortcut">
++    <string>0</string>
++   </property>
+   </action>
+   <action name="actionZoomFit">
+    <property name="icon">
+@@ -298,6 +304,9 @@
+    <property name="text">
+     <string>&amp;Fit</string>
+    </property>
++   <property name="shortcut">
++    <string>=</string>
++   </property>
+   </action>
+   <action name="actionRotateClockwise">
+    <property name="icon">
+@@ -308,6 +317,9 @@
+    <property name="text">
+     <string>&amp;Rotate Clockwise</string>
+    </property>
++   <property name="shortcut">
++    <string>]</string>
++   </property>
+   </action>
+   <action name="actionRotateCounterclockwise">
+    <property name="icon">
+@@ -318,6 +330,9 @@
+    <property name="text">
+     <string>Rotate &amp;Counterclockwise</string>
+    </property>
++   <property name="shortcut">
++    <string>[</string>
++   </property>
+   </action>
+   <action name="actionPreferences">
+    <property name="text">
+@@ -445,11 +460,17 @@
+    <property name="text">
+     <string>Show Thumbnails</string>
+    </property>
++   <property name="shortcut">
++    <string>Ctrl+T</string>
++   </property>
+   </action>
+   <action name="actionFileProperties">
+    <property name="text">
+     <string>File Properties</string>
+    </property>
++   <property name="shortcut">
++    <string>Alt+Return</string>
++   </property>
+   </action>
+  </widget>
+  <customwidgets>

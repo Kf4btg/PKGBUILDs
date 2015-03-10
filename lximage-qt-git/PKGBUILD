@@ -1,0 +1,45 @@
+# Maintainer: Jerome Leclanche <jerome@leclan.ch>
+# Contributor: Kf4btg (a) GitHub
+
+_pkgname=lximage-qt
+pkgname=$_pkgname-git
+pkgver=0.4.0.1.g9d3de02
+pkgrel=5
+pkgdesc="The LXQt image viewer"
+arch=("i686" "x86_64")
+url="http://lxqt.org"
+license=("GPL2")
+depends=("pcmanfm-qt" "qt5-x11extras")
+makedepends=("git" "cmake" "qt5-tools")
+provides=("$_pkgname")
+conflicts=("$_pkgname")
+install="$_pkgname.install"
+source=("git://github.com/lxde/$_pkgname.git"
+        'shortcuts.patch'
+        )
+sha256sums=('SKIP'
+            '31f04b1719bf5b1a18d20c7bd31633f510c2938ab5bb28f75bd9c1e7fa48d51e')
+
+
+pkgver() {
+  cd "$srcdir/$_pkgname"
+  git describe --always | sed "s/-/./g"
+}
+
+prepare() {
+  cd "$srcdir/$_pkgname"
+  patch -p1 < ../shortcuts.patch
+}
+
+build() {
+  mkdir -p build
+  cd build
+  cmake "$srcdir/$_pkgname" \
+	-DCMAKE_INSTALL_PREFIX=/usr
+  make
+}
+
+package() {
+	cd build
+	make DESTDIR="$pkgdir" install
+}

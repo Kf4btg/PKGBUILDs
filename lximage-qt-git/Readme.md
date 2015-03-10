@@ -1,0 +1,1 @@
+Just some personal convenience patches, mostly dealing with adding or modifying various shortcuts, as they are not configurable from within the program's runtime options.
