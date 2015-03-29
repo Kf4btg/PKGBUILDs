@@ -1,0 +1,184 @@
+diff --git a/orig/kompare-14.12.3/komparepart/komparelistview.cpp b/src/kompare-14.12.3/komparepart/komparelistview.cpp
+index b2935c9..2e43ab5 100644
+--- a/orig/kompare-14.12.3/komparepart/komparelistview.cpp
++++ b/src/kompare-14.12.3/komparepart/komparelistview.cpp
+@@ -760,12 +760,17 @@ void KompareListViewLineItem::paintCell( QPainter* p, const QStyleOptionViewItem
+ 	p->translate(option.rect.topLeft());
+ 	p->translate(0, -paintOffset());
+ 
+-	QColor bg( Qt::white ); // Always make the background white when it is not a real difference
+-	if ( diffItemParent()->difference()->type() == Difference::Unchanged )
++// 	QColor bg( Qt::white ); // Always make the background white when it is not a real difference
++    QColor bg = kompareListView()->settings()->m_bgColor;
++    if ( diffItemParent()->difference()->type() == Difference::Unchanged )
+ 	{
+ 		if ( column == COL_LINE_NO )
+ 		{
+-			bg = QColor( Qt::lightGray );
++            if ( bg.value() >= 50 )
++                bg = bg.darker(150);
++            else
++                bg = bg.lighter(150);
++// 			bg = QColor( Qt::lightGray );
+ 		}
+ 	}
+ 	else
+@@ -780,10 +785,11 @@ void KompareListViewLineItem::paintCell( QPainter* p, const QStyleOptionViewItem
+ 	p->fillRect( 0, 0, width, paintHeight(), bg );
+ 
+ 	// Paint foreground
++    QColor text = kompareListView()->settings()->m_textColor;
+ 	if ( diffItemParent()->difference()->type() == Difference::Unchanged )
+-		p->setPen( QColor( Qt::darkGray ) ); // always make normal text gray
++		p->setPen( text ); // always make normal text gray
+ 	else
+-		p->setPen( QColor( Qt::black ) ); // make text with changes black
++		p->setPen( text.darker(125) ); // make text with changes darker
+ 
+ 	paintText( p, bg, column, width, align );
+ 
+diff --git a/orig/kompare-14.12.3/libdialogpages/viewpage.cpp b/src/kompare-14.12.3/libdialogpages/viewpage.cpp
+index e26d728..5c71a2f 100644
+--- a/orig/kompare-14.12.3/libdialogpages/viewpage.cpp
++++ b/src/kompare-14.12.3/libdialogpages/viewpage.cpp
+@@ -87,6 +87,20 @@ ViewPage::ViewPage() : PageBase()
+ 	gridLayout->addWidget( label, 3, 0 );
+ 	gridLayout->addWidget( m_appliedColorButton, 3, 1 );
+ 
++    // add the bgColor
++	label = new QLabel( i18n( "Background color:" ), colorGroupBox );
++	m_bgColorButton = new KColorButton( colorGroupBox );
++	label->setBuddy( m_bgColorButton );
++	gridLayout->addWidget( label, 4, 0 );
++	gridLayout->addWidget( m_bgColorButton, 4, 1 );
++
++    // add the textColor
++    label = new QLabel( i18n( "Text color:" ), colorGroupBox );
++	m_textColorButton = new KColorButton( colorGroupBox );
++	label->setBuddy( m_textColorButton );
++	gridLayout->addWidget( label, 5, 0 );
++	gridLayout->addWidget( m_textColorButton, 5, 1 );
++
+ 	// scroll number of lines (snol)
+ 	snolGroupBox = new QGroupBox( page );
+         QHBoxLayout *snolLayout = new QHBoxLayout;
+@@ -168,6 +182,8 @@ void ViewPage::setSettings( ViewSettings* setts )
+ 	m_changedColorButton->setColor( m_settings->m_changeColor );
+ 	m_removedColorButton->setColor( m_settings->m_removeColor );
+ 	m_appliedColorButton->setColor( m_settings->m_appliedColor );
++    m_bgColorButton->setColor     ( m_settings->m_bgColor );
++    m_textColorButton->setColor   ( m_settings->m_textColor );
+ 	m_snolSpinBox->setValue       ( m_settings->m_scrollNoOfLines );
+ 	m_tabSpinBox->setValue        ( m_settings->m_tabToNumberOfSpaces );
+ 
+@@ -190,6 +206,8 @@ void ViewPage::apply()
+ 	m_settings->m_changeColor         = m_changedColorButton->color();
+ 	m_settings->m_removeColor         = m_removedColorButton->color();
+ 	m_settings->m_appliedColor        = m_appliedColorButton->color();
++	m_settings->m_bgColor             = m_bgColorButton->color();
++	m_settings->m_textColor           = m_textColorButton->color();
+ 	m_settings->m_scrollNoOfLines     = m_snolSpinBox->value();
+ 	m_settings->m_tabToNumberOfSpaces = m_tabSpinBox->value();
+ 
+@@ -205,7 +223,9 @@ void ViewPage::setDefaults()
+ 	m_changedColorButton->setColor( ViewSettings::default_changeColor );
+ 	m_removedColorButton->setColor( ViewSettings::default_removeColor );
+ 	m_appliedColorButton->setColor( ViewSettings::default_appliedColor );
+-	m_snolSpinBox->setValue       ( 3 );
++	m_bgColorButton->setColor     ( ViewSettings::default_bgColor );
++    m_textColorButton->setColor   ( ViewSettings::default_textColor );
++    m_snolSpinBox->setValue       ( 3 );
+         m_tabSpinBox->setValue        ( 4 );
+ 
+ 	// TODO: port
+diff --git a/orig/kompare-14.12.3/libdialogpages/viewpage.h b/src/kompare-14.12.3/libdialogpages/viewpage.h
+index b5b770d..1b8e0bc 100644
+--- a/orig/kompare-14.12.3/libdialogpages/viewpage.h
++++ b/src/kompare-14.12.3/libdialogpages/viewpage.h
+@@ -54,6 +54,8 @@ public:
+ 	KColorButton* m_changedColorButton;
+ 	KColorButton* m_addedColorButton;
+ 	KColorButton* m_appliedColorButton;
++	KColorButton* m_bgColorButton;
++	KColorButton* m_textColorButton;
+ 	// snol == scroll number of lines
+ 	QSpinBox*     m_snolSpinBox;
+ 	QSpinBox*     m_tabSpinBox;
+diff --git a/orig/kompare-14.12.3/libdialogpages/viewsettings.cpp b/src/kompare-14.12.3/libdialogpages/viewsettings.cpp
+index 5a69d0b..5b4c793 100644
+--- a/orig/kompare-14.12.3/libdialogpages/viewsettings.cpp
++++ b/src/kompare-14.12.3/libdialogpages/viewsettings.cpp
+@@ -30,6 +30,9 @@ const QColor ViewSettings::default_removeColor (190, 237, 190);
+ const QColor ViewSettings::default_changeColor (237, 190, 190);
+ const QColor ViewSettings::default_addColor    (190, 190, 237);
+ const QColor ViewSettings::default_appliedColor(237, 237, 190);
++const QColor ViewSettings::default_bgColor     (237, 237, 237);
++const QColor ViewSettings::default_textColor  ( Qt::darkGray );
++
+ 
+ ViewSettings::ViewSettings( QWidget* parent )
+ 	: SettingsBase( parent ),
+@@ -37,6 +40,8 @@ ViewSettings::ViewSettings( QWidget* parent )
+ 	m_changeColor( 0, 0, 0),
+ 	m_addColor( 0, 0, 0),
+ 	m_appliedColor( 0, 0, 0),
++	m_bgColor( 0, 0, 0),
++	m_textColor( 0, 0, 0),
+ 	m_scrollNoOfLines( 0 ),
+ 	m_tabToNumberOfSpaces( 0 )
+ {
+@@ -53,6 +58,8 @@ void ViewSettings::loadSettings( KConfig* config )
+ 	m_changeColor         = cfg.readEntry( "ChangeColor",         default_changeColor );
+ 	m_addColor            = cfg.readEntry( "AddColor",            default_addColor );
+ 	m_appliedColor        = cfg.readEntry( "AppliedColor",        default_appliedColor );
++    m_bgColor             = cfg.readEntry( "BackgroundColor",     default_bgColor );
++    m_textColor           = cfg.readEntry( "TextColor",           default_textColor );
+ 	m_scrollNoOfLines     = cfg.readEntry  ( "ScrollNoOfLines",     3 );
+ 	m_tabToNumberOfSpaces = cfg.readEntry  ( "TabToNumberOfSpaces", 4 );
+ 
+@@ -68,6 +75,8 @@ void ViewSettings::saveSettings( KConfig* config )
+ 	cfg.writeEntry( "ChangeColor",         m_changeColor );
+ 	cfg.writeEntry( "AddColor",            m_addColor );
+ 	cfg.writeEntry( "AppliedColor",        m_appliedColor );
++	cfg.writeEntry( "BackgroundColor",     m_bgColor );
++	cfg.writeEntry( "TextColor",           m_textColor );
+ 	cfg.writeEntry( "ScrollNoOfLines",     m_scrollNoOfLines );
+ 	cfg.writeEntry( "TabToNumberOfSpaces", m_tabToNumberOfSpaces );
+ 
+@@ -84,7 +93,7 @@ QColor ViewSettings::colorForDifferenceType( int type, bool selected, bool appli
+ 	{
+ 		type = type & 0xFFFFFFEF; // remove the AppliedByBlend
+ 		switch( type ) {
+-				case Difference::Unchanged: color = Qt::white; break;
++            case Difference::Unchanged: color = m_bgColor; break;
+ 			case Difference::Change:    color = m_changeColor; break;
+ 			case Difference::Insert:    color = m_addColor; break;
+ 			case Difference::Delete:    color = m_removeColor; break;
+diff --git a/orig/kompare-14.12.3/libdialogpages/viewsettings.h b/src/kompare-14.12.3/libdialogpages/viewsettings.h
+index 305e934..22b5bb1 100644
+--- a/orig/kompare-14.12.3/libdialogpages/viewsettings.h
++++ b/src/kompare-14.12.3/libdialogpages/viewsettings.h
+@@ -34,6 +34,8 @@ public:
+ 	static const QColor default_changeColor;
+ 	static const QColor default_addColor;
+ 	static const QColor default_appliedColor;
++    static const QColor default_bgColor;
++    static const QColor default_textColor;
+ 
+ 	ViewSettings( QWidget* parent );
+ 	~ViewSettings();
+@@ -48,10 +50,14 @@ public:
+ 	QColor m_changeColor;
+ 	QColor m_addColor;
+ 	QColor m_appliedColor;
++    QColor m_bgColor;
++    QColor m_textColor;
+ 	QColor m_selectedRemoveColor;
+ 	QColor m_selectedChangeColor;
+ 	QColor m_selectedAddColor;
+ 	QColor m_selectedAppliedColor;
++    QColor m_selectedBgColor;
++    QColor m_selectedTextColor;
+ 	int    m_scrollNoOfLines;
+ 	int    m_tabToNumberOfSpaces;
+ 

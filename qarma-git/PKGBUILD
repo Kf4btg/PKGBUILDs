@@ -1,43 +1,40 @@
-# Creator: Thomas Lübking <thomas.luebking at gmail>
-# PKGBUILD contributor: Kf4btg AT github
-
+# Maintainer: Federico Di Pierro <nierro92@gmail.com>
+# Contributor: Kf4btg (a) GitHub
 pkgname=qarma-git
 _gitname=qarma
-_pkgver=0.1.0
-pkgver=0.1.0.r13
-pkgrel=1
-pkgdesc="A drop-in replacement clone for zenity, written in Qt4/5"
+pkgver=20
+pkgrel=5.1
+pkgdesc="A clone/replacement of zenity, written in Qt4/5. With additional wrapper for reading from stdin."
 arch=('i686' 'x86_64')
 url="https://github.com/luebking/qarma"
 license=('GPL')
-
-conflicts=('zenity')
-replaces=('zenity')
-provides=('qarma' 'zenity')
-depends=('qt4')
-license=('GPL')
-
-source=("$pkgname::git+https://github.com/luebking/$_gitname.git")
-md5sums=('SKIP')
-install="${_gitname}.install"
+depends=('qt5-base' 'qt5-x11extras')
+makedepends=('git')
+provides=('qzenity')
+conflicts=('qarma')
+source=("git://github.com/luebking/qarma.git"
+    "qzenity.sh"
+)
+md5sums=('SKIP'
+         '18d81578b4b549aa5cf6bc1a33de6289')
 
 pkgver() {
-  cd "$pkgname"
-  echo "$_pkgver.r$(git rev-list --count master)"
+	cd ${_gitname}
+    git rev-list --count HEAD
 }
 
 build()
 {
-    cd "$srcdir"/"$pkgname"
-    qmake .
+    cd $srcdir/$_gitname
+    qmake
     make
 }
 
 package() {
-    install -D "$srcdir"/"$pkgname"/qarma "$pkgdir"/usr/bin/qarma
-    install -dm 644 "$pkgdir"/usr/share/licenses/"$_gitname"
-    install -m 644 -t "$pkgdir"/usr/share/licenses/"$_gitname"/ "$srcdir"/"$pkgname"/LICENSE
-    strip $pkgdir/usr/bin/qarma
+    cd $srcdir/$_gitname
+    strip qarma
+    install -D -m 755 qarma $pkgdir/usr/bin/qarma
+    
+    cd $srcdir
+    install -D -m 755 qzenity.sh $pkgdir/usr/bin/qzenity
 }
-
-# vim:set ts=2 sw=2 et:
